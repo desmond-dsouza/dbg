@@ -1,5 +1,6 @@
 from dbg import debug, check, TraceCalls
 
+
 @TraceCalls()
 def foo():
     debug('foo: Hi World')

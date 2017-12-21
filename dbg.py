@@ -40,7 +40,7 @@ class TraceCalls(object):
                 [repr(a) for a in args] +
                 ["%s=%s" % (a, repr(b)) for a, b in kwargs.items()])
             # self.stream.write('%s%s(%s)\n' % (indent, fn.__name__, argstr))
-            msg = '>>%s(%s)' % (fn.__name__, argstr)
+            msg = f">> {fn.__name__}({argstr})"
             debug(msg, frame_index=2, traced=True)
 
             TraceCalls.cur_indent += self.indent_step
@@ -80,8 +80,8 @@ def check(msg, lam):
     if not DBG:
         return
     if not lam():
-        debug("FAILED *** " + msg, frame_index=2)
-        raise AssertionError()
+        debug(f"FAILED *** {msg} ... Terminating", frame_index=2)
+        sys.exit(1)
     else:
-        debug("PASSED " + msg, frame_index=2)
+        debug(f"PASSED {msg}", frame_index=2)
 
