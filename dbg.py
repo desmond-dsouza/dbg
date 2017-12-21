@@ -1,3 +1,9 @@
+## Exports:
+# DBG = True or False : single point to turn on or off all dbg stuff
+# @TraceCalls() - decorator to trace entry & exit
+# debug(obj) - indented debug-display of obj
+# check(aLambda) - if aLambda does not evaluate to True, print error & stop
+
 import inspect
 import logging
 import sys
