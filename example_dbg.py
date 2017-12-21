@@ -4,9 +4,9 @@ from dbg import debug, check, TraceCalls
 def foo():
     debug('foo: Hi World')
     debug("foo: well")
-    for i in range(1):
+    for i in range(3):
         debug("foo: Now we're cookin")
-        check("condition", lambda: True)
+        check(f"invariant: {i} < 2", lambda: i < 2)
         for i in range(1):
             debug("foo: 2 tabs in")
     return "42"

@@ -82,4 +82,6 @@ def check(msg, lam):
     if not lam():
         debug("FAILED *** " + msg, frame_index=2)
         raise AssertionError()
+    else:
+        debug("PASSED " + msg, frame_index=2)
 
