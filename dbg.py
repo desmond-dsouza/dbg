@@ -1,8 +1,10 @@
-## Exports:
+# Exports:
 # DBG = True or False : single point to turn on or off all dbg stuff
 # @TraceCalls() - decorator to trace entry & exit
-# debug(obj) - indented debug-display of obj
-# check(aLambda) - if aLambda does not evaluate to True, print error & stop
+# debug(obj) - indented display of obj (returns obj, so can be used as "tap")
+# check(aLambda) - if aLambda does not evaluate to True, print error
+
+# freely borrows / adapts from others, sorry did not keep track
 
 import inspect
 import logging
@@ -12,13 +14,11 @@ import pprint
 
 logging.basicConfig(format='%(message)s', level=0)
 
-DBG = True
+DEBUG = True
 
 
 class TraceCalls(object):
-    """ Use as a decorator on functions that should be traced. Several
-        functions can be decorated - they will all be indented according
-        to their call depth.
+    """ Use as a decorator on any function(s) to trace call & return values.
     """
 
     cur_indent = 0
@@ -50,38 +50,48 @@ class TraceCalls(object):
             if self.show_ret:
                 debug('<< %s' % str(ret), frame_index=2, traced=True)
             return ret
-        return wrapper if DBG else fn
+        return wrapper if DEBUG else fn
 
 
-def debug(obj, frame_index=1, traced=False, pp=False):
-    if not DBG:
-        return
-    f = inspect.currentframe()
-    # fs = inspect.getouterframes(f)
-    frame,filename,line_number,function_name,lines,index=inspect.getouterframes(
+def _pp_indent(obj, indent=0, prefix=""):
+    fstring = ' ' * indent + prefix + ' {}'
+    lines = pprint.pformat(obj).splitlines(True)
+    return ''.join([lines[0]] + [fstring.format(l) for l in lines[1:]])
+
+
+def debug(obj, label="", frame_index=1, traced=False, pretty=False):
+    """Display with indentation for debugging, returns obj. Optional label
+    and pretty-printing args"""
+    if not DEBUG:
+        return obj
+    frame, filename, line_number, function_name, lines, index = inspect.getouterframes(
         inspect.currentframe())[frame_index]
     line = lines[0]
     call_level = TraceCalls.cur_indent
     tab_level = 0 if traced else line.find(line.lstrip()) // 4
-    msg = pprint.pformat(obj, indent=call_level*3 + tab_level*2) if pp else str(obj)
-    # indentation_level = (call_level + indent_level) * 2 #((TraceCalls.cur_indent-1) * 2) + (line.find(line.lstrip()) // 2)
-    logging.debug('{:<3d}{c}{i} {m}'.format(
+    call_padding = ' | ' * call_level
+    tab_padding = '  ' * tab_level
+    msg = _pp_indent(obj, indent=3, prefix=call_padding + tab_padding) if pretty else str(obj)
+    lbl = f"{label}: " if label else ""
+    logging.debug('{:<3d}{c}{i} {lbl}{m}'.format(
         line_number,
-        c=' | ' * call_level,
-        i='  ' * tab_level,
+        c=call_padding,
+        i=tab_padding,
+        lbl=lbl,
         m=msg
     ))
     sys.stdout.flush()
     sys.stderr.flush()
-    return msg
+    return obj
 
 
-def check(msg, lam):
-    if not DBG:
+def check(msg, a_lambda):
+    """If a_lambda() is False display FAILED message"""
+    if not DEBUG:
         return
-    if not lam():
-        debug(f"FAILED *** {msg} ... Terminating", frame_index=2)
-        sys.exit(1)
+    if not a_lambda():
+        debug(f"FAILED {msg} <<<<<<<<<<<<<<<<<<<<<<<<<<", frame_index=2)
+        # sys.exit()
     else:
         debug(f"PASSED {msg}", frame_index=2)
 
