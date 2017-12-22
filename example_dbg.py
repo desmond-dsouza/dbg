@@ -1,7 +1,6 @@
-from dbg import debug, check, TraceCalls
-import dbg
+from dbg import debug, check, TraceCalls, set_debug
 
-dbg.DEBUG = True
+set_debug(True)
 
 
 @TraceCalls()

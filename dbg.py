@@ -1,5 +1,5 @@
 # Exports:
-# DBG = True or False : single point to turn on or off all dbg stuff
+# set_debug(True or False): turn on or off all dbg stuff
 # @TraceCalls() - decorator to trace entry & exit
 # debug(obj) - indented display of obj (returns obj, so can be used as "tap")
 # check(aLambda) - if aLambda does not evaluate to True, print error
@@ -15,6 +15,11 @@ import pprint
 logging.basicConfig(format='%(message)s', level=0)
 
 DEBUG = True
+
+
+def set_debug(v: bool):
+    global DEBUG
+    DEBUG = v
 
 
 class TraceCalls(object):
