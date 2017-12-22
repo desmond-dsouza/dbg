@@ -1,6 +1,8 @@
-from dbg import debug, check, TraceCalls, set_debug
+# An example of using dbg: recursive calls, trace, debug, check
 
-set_debug(True)
+from dbg import debug, check, TraceCalls, debugging, Dbg
+
+debugging(Dbg.enabled_only)
 
 
 @TraceCalls()
@@ -11,7 +13,7 @@ def foo():
         debug("foo: Now we're cookin")
         check(f"invariant: {i} < 2", lambda: i < 2)
         for i in range(debug(1, label="ONE")):
-            debug("foo: 2 tabs in")
+            debug("foo: 2 tabs in", enabled=True)
     return "42"
 
 
@@ -19,7 +21,7 @@ pp_stuff = ['spam', 'eggs', 'lumberjack', 'knights', 'ni']
 pp_stuff.insert(0, pp_stuff[:])
 
 
-@TraceCalls()
+@TraceCalls(enabled=True)
 def bar(i):
     debug("bar " + str(i))
     debug(pp_stuff, pretty=False)
@@ -27,6 +29,7 @@ def bar(i):
         bar(i - 1)
         return "99", i
     else:
+        debug(pp_stuff, pretty=True)
         return foo(), i
 
 
