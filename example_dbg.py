@@ -2,7 +2,7 @@
 
 from dbg import debug, check, TraceCalls, debugging, Dbg
 
-debugging(Dbg.enabled_only)
+debugging(Dbg.all)
 
 
 @TraceCalls()
@@ -22,7 +22,7 @@ pp_stuff.insert(0, pp_stuff[:])
 
 
 @TraceCalls(enabled=True)
-def bar(i):
+def bar(i, j=None):
     debug("bar " + str(i))
     debug(pp_stuff, pretty=False)
     if i > 1:
