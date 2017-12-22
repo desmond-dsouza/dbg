@@ -4,7 +4,7 @@
 # debug(obj) - indented display of obj (returns obj, so can be used as "tap")
 # check(aLambda) - if aLambda does not evaluate to True, print error
 
-# freely borrows / adapts from others, sorry did not keep track
+# Freely borrowed & adapted from others' code, sorry I did not keep track
 
 import inspect
 import logging
@@ -70,8 +70,8 @@ def _pp_indent(obj, indent=0, prefix=""):
 
 def debug(obj, label="", pretty=False, enabled=False):
     """Display with indentation for debugging, returns obj. Optional label
-    and multi-line pretty-printing args, and select for `selective` debugging"""
-    return _debug(obj, label=label, pretty=pretty, enabled=enabled)
+    and multi-line pretty-printing args, and enabled for selective debugging."""
+    return _debug(obj, label=label, pretty=pretty, enabled=enabled, frame_index=2)
 
 
 logging.basicConfig(format='%(message)s', level=0)
